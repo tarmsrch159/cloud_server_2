@@ -21,10 +21,10 @@ const token_Line = "jf5yMHmJckGqdVpoFsv2UvDLEPRSYXILS4d8JorraCA";
 
 //Variable for conection to database
 const db = mysql.createConnection({
-  host: "bpif0oz1tr7sofjssyy9-mysql.services.clever-cloud.com",
-  user: "unxlnjtasmh93xfp",
-  password: "EhJnvcihUQQMQTPB9H6w",
-  database: "bpif0oz1tr7sofjssyy9",
+  host: "localhost",
+  user: "root",
+  password: "",
+  database: "project_mockup",
 });
 
 //Conection to database
@@ -486,7 +486,7 @@ app.get("/course_name", (req, res) => {
 //Delete member
 app.delete("/delete_member/:id", (req, res) => {
   const id = req.params.id;
-  db.query("DELETE FROM member WHERE id = ?", [id], (err, result) => {
+  db.query("DELETE FROM member WHERE reg_id = ?", [id], (err, result) => {
     if (err) {
       res.send(err);
     }

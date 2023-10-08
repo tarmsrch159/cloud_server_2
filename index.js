@@ -21,10 +21,10 @@ const token_Line = "RAl3CtmN2KGt6eu5g7ZvTdtpA2J1VygIzcnyhiP7VXt";
 
 //Variable for conection to database
 const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "project_mockup",
+  host: "bqmn5uzoqbl28n6wo1ug-mysql.services.clever-cloud.com",
+  user: "ui43my666qg92sci",
+  password: "ui43my666qg92sci",
+  database: "bqmn5uzoqbl28n6wo1ug",
 });
 
 //Conection to database

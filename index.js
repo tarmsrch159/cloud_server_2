@@ -203,7 +203,7 @@ app.post("/add_member", upload.single("image"), (req, res) => {
   const { kn_score, profi_score, sum_score } = req.body
   const count_max_sql = `SELECT MAX(id) +1 AS id  FROM member;`;
 
-  const query = `INSERT INTO member (reg_id, id_card, course, candidate, prefix, line_id
+  const query = `INSERT INTO member (reg_id, id_card, course, candidate, prefix, line_id,
     name, lastname, name_en, lastname_en,nationality, birthday, tel, 
     email, address, educational, branch,province, 
     amphure, district, gender, permission, receipt, 

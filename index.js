@@ -214,7 +214,7 @@ app.post("/add_member", upload.single("image"), (req, res) => {
     ?, ?, ?, ?, ?, 
     ?, ?, ?, ?, ?,
     ?, ?, ?, ?, ?, 
-    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) `;
+    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) `;
   db.query(count_max_sql, (err, result) => {
     function padWithLeadingZeros(num, totalLength) {
       return String(num).padStart(totalLength, "0");
@@ -254,7 +254,8 @@ app.post("/add_member", upload.single("image"), (req, res) => {
           kn_score,
           profi_score,
           sum_score,
-          pass_fail
+          pass_fail,
+          book_id
           
         ],
         (err, result) => {

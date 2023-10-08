@@ -176,6 +176,7 @@ app.get("/user_information/:id", (req, res) => {
 
 app.post("/add_member", upload.single("image"), (req, res) => {
   const reg_day = req.body.reg_day;
+  
   const id_card = req.body.id_card;
   // const reg_id = req.body.reg_id;
   const name = req.body.name;

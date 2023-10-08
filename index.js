@@ -213,7 +213,7 @@ app.post("/add_member", upload.single("image"), (req, res) => {
     ?, ?, ?, ?, ?, 
     ?, ?, ?, ?, ?,
     ?, ?, ?, ?, ?, 
-    ?, ?, ?, ?, ?, ?, ?, ?) `;
+    ?, ?, ?, ?, ?, ?, ?, ?, ?) `;
   db.query(count_max_sql, (err, result) => {
     function padWithLeadingZeros(num, totalLength) {
       return String(num).padStart(totalLength, "0");

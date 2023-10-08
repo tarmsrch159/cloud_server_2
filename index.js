@@ -176,7 +176,6 @@ app.get("/user_information/:id", (req, res) => {
 
 app.post("/add_member", upload.single("image"), (req, res) => {
   const reg_day = req.body.reg_day;
-  
   const id_card = req.body.id_card;
   // const reg_id = req.body.reg_id;
   const name = req.body.name;
@@ -201,18 +200,19 @@ app.post("/add_member", upload.single("image"), (req, res) => {
   const district = req.body.district;
   const line_id = req.body.line_id
   const img = req.file.filename;
+  const { kn_score, profi_score, sum_score } = req.body
   const count_max_sql = `SELECT MAX(id) +1 AS id  FROM member;`;
 
-  const query = `INSERT INTO member (reg_id, id_card, course, candidate, prefix, line_id,
+  const query = `INSERT INTO member (reg_id, id_card, course, candidate, prefix, line_id
     name, lastname, name_en, lastname_en,nationality, birthday, tel, 
     email, address, educational, branch,province, 
     amphure, district, gender, permission, receipt, 
-    profile_img, reg_day)    
+    profile_img, reg_day , kn_score, profi_score, sum_score)    
     VALUES (?, ?, ?, ?, ?, 
     ?, ?, ?, ?, ?, 
     ?, ?, ?, ?, ?,
     ?, ?, ?, ?, ?, 
-    ?, ?, ?, ?, ?) `;
+    ?, ?, ?, ?, ?, ?, ?, ?) `;
   db.query(count_max_sql, (err, result) => {
     function padWithLeadingZeros(num, totalLength) {
       return String(num).padStart(totalLength, "0");
@@ -249,6 +249,9 @@ app.post("/add_member", upload.single("image"), (req, res) => {
           receipt,
           img,
           reg_day,
+          kn_score,
+          profi_score,
+          sum_score
           
         ],
         (err, result) => {

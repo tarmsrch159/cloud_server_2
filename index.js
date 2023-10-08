@@ -17,7 +17,7 @@ const multer = require("multer");
 const path = require("path");
 
 const { notiEvent } = require("./Functions/Notify");
-const token_Line = "jf5yMHmJckGqdVpoFsv2UvDLEPRSYXILS4d8JorraCA";
+const token_Line = "RAl3CtmN2KGt6eu5g7ZvTdtpA2J1VygIzcnyhiP7VXt";
 
 //Variable for conection to database
 const db = mysql.createConnection({
@@ -75,7 +75,7 @@ app.post("/login_user", (req, res) => {
   const reg_id = req.body.reg_id;
   const id_card = req.body.id_card;
 
-  var query = `SELECT reg_id, id_card, course_name.name_th AS course_name_th, candidate, prefix, name, lastname, nationality, tel, email, educational, branch, permission, receipt, gender, profile_img,
+  var query = `SELECT reg_id, id_card, line_id,course_name.name_th AS course_name_th, candidate, prefix, name, lastname, nationality, tel, email, educational, branch, permission, receipt, gender, profile_img, kn_score, profi_score, sum_score, pass_fail, book_id,
   CONCAT( DATE_FORMAT( birthday , '%Y' ), '/', DATE_FORMAT( birthday , '%m' ) , '/', DATE_FORMAT( birthday , '%d' ) ) AS Thaibirthday, provinces.name_th AS province_name, amphures.name_th AS amphure_name, districts.name_th AS district_name
   FROM member
   INNER JOIN course_name
@@ -198,10 +198,11 @@ app.post("/add_member", upload.single("image"), (req, res) => {
   const province = req.body.province;
   const amphure = req.body.amphure;
   const district = req.body.district;
+  const line_id = req.body.line_id
   const img = req.file.filename;
   const count_max_sql = `SELECT MAX(id) +1 AS id  FROM member;`;
 
-  const query = `INSERT INTO member (reg_id, id_card, course, candidate, prefix, 
+  const query = `INSERT INTO member (reg_id, id_card, course, candidate, prefix, line_id,
     name, lastname, name_en, lastname_en,nationality, birthday, tel, 
     email, address, educational, branch,province, 
     amphure, district, gender, permission, receipt, 
@@ -210,7 +211,7 @@ app.post("/add_member", upload.single("image"), (req, res) => {
     ?, ?, ?, ?, ?, 
     ?, ?, ?, ?, ?,
     ?, ?, ?, ?, ?, 
-    ?, ?, ?, ?) `;
+    ?, ?, ?, ?, ?) `;
   db.query(count_max_sql, (err, result) => {
     function padWithLeadingZeros(num, totalLength) {
       return String(num).padStart(totalLength, "0");
@@ -227,6 +228,7 @@ app.post("/add_member", upload.single("image"), (req, res) => {
           course,
           candidate,
           prefix,
+          line_id,
           name,
           lastname,
           name_EN,
@@ -246,6 +248,7 @@ app.post("/add_member", upload.single("image"), (req, res) => {
           receipt,
           img,
           reg_day,
+          
         ],
         (err, result) => {
           if (err) {
@@ -272,31 +275,7 @@ app.post("/add_member", upload.single("image"), (req, res) => {
   });
 });
 
-app.get("/regular_amphures", (req, res) => {
-  db.query(
-    "SELECT id, name_th FROM amphures ORDER BY name_th ASC",
-    (err, result) => {
-      if (result.length === 0) {
-        res.json({ Error: "Failed" });
-      } else {
-        res.send(result);
-      }
-    }
-  );
-});
 
-app.get("/regular_districts", (req, res) => {
-  db.query(
-    "SELECT id, name_th FROM districts ORDER BY name_th ASC",
-    (err, result) => {
-      if (result.length === 0) {
-        res.json({ Error: "Failed" });
-      } else {
-        res.send(result);
-      }
-    }
-  );
-});
 
 app.get("/get_provinces", (req, res) => {
   db.query(
@@ -744,25 +723,6 @@ app.put("/sum_score", (req, res) => {
     );
   }
  
-
-  // db.query(sql_permission, [reg_id], (err, result_2) => {
-  //   console.log(result_2[0].sum_score);
-  //   if (result_2[0].sum_score > 69) {
-
-  //     // db.query(update_book, [last_book_id, reg_id], (err, result_3) => {
-  //     //   if(result_3){
-  //     //     res.send(result_3)
-  //     //     console.log(result_3)
-  //     //   }else{
-  //     //     // res.send(err)
-  //     //   }
-  //     // })
-
-  //   }else{
-  //     console.log('failed')
-  //     return false
-  //   }
-  // });
 });
 
 app.listen(PORT, () => console.log("Server is running on port " + PORT));

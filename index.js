@@ -36,6 +36,20 @@ db.connect((err) => {
   }
 });
 
+//allow access for another domain
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "https://frontend-user-test-deploy-awvw8mtzu-tanachais-projects.vercel.app");
+  res.header(
+    "Access-Control-Allow-Methods",
+    "POST, GET, PUT, PATCH, DELETE, OPTIONS"
+  );
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Content-Type, Option, Authorization"
+  );
+  return next();
+});
+
 app.use(express.json());
 app.use(cors());
 app.use(express.static("public"));
@@ -198,11 +212,11 @@ app.post("/add_member", upload.single("image"), (req, res) => {
   const province = req.body.province;
   const amphure = req.body.amphure;
   const district = req.body.district;
-  const line_id = req.body.line_id
+  const line_id = req.body.line_id;
   const img = req.file.filename;
-  const pass_fail = ''
-  const book_id = ''
-  const { kn_score, profi_score, sum_score } = req.body
+  const pass_fail = "";
+  const book_id = "";
+  const { kn_score, profi_score, sum_score } = req.body;
   const count_max_sql = `SELECT MAX(id) +1 AS id  FROM member;`;
 
   const query = `INSERT INTO member (reg_id, id_card, course, candidate, prefix, line_id,
@@ -255,8 +269,7 @@ app.post("/add_member", upload.single("image"), (req, res) => {
           profi_score,
           sum_score,
           pass_fail,
-          book_id
-          
+          book_id,
         ],
         (err, result) => {
           if (err) {
@@ -282,8 +295,6 @@ app.post("/add_member", upload.single("image"), (req, res) => {
     });
   });
 });
-
-
 
 app.get("/get_provinces", (req, res) => {
   db.query(
@@ -696,7 +707,7 @@ app.put("/sum_score", (req, res) => {
   // const sql_permission = "SELECT sum_score FROM member WHERE reg_id = ?";
   // const update_book = 'UPDATE member SET book_id =? WHERE reg_id = ?'
   const text = "";
-  if(total_score > 69){
+  if (total_score > 69) {
     db.query(sql_book_id, text, (err, result_1) => {
       function padWithLeadingZeros(num, totalLength) {
         return String(num).padStart(totalLength, "0");
@@ -705,7 +716,7 @@ app.put("/sum_score", (req, res) => {
       const last_book_id = padWithLeadingZeros(insertedId, 4);
       db.query(
         sql,
-        [kn_score, profi_score, total_score, pass_fail, last_book_id,reg_id],
+        [kn_score, profi_score, total_score, pass_fail, last_book_id, reg_id],
         (err, result) => {
           if (err) {
             res.json({ status: "false" });
@@ -716,10 +727,10 @@ app.put("/sum_score", (req, res) => {
         }
       );
     });
-  }else if(total_score >= 50 && total_score <= 69){
+  } else if (total_score >= 50 && total_score <= 69) {
     db.query(
       sql,
-      [kn_score, profi_score, total_score, 'ผ่าน', '',reg_id],
+      [kn_score, profi_score, total_score, "ผ่าน", "", reg_id],
       (err, result) => {
         if (err) {
           res.json({ status: "false" });
@@ -730,7 +741,6 @@ app.put("/sum_score", (req, res) => {
       }
     );
   }
- 
 });
 
 app.listen(PORT, () => console.log("Server is running on port " + PORT));

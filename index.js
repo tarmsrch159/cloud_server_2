@@ -390,7 +390,7 @@ app.post("/admin_login", (req, res) => {
       console.error("Error executing Mysql Query:", err);
       res.status(500).json({ error: "An error occurred" });
     }
-    if (result.length === 0) {
+    if (result[0].length === 0) {
       res.json({
         Error: "กรุณาเข้าสู่ระบบใหม่อีกครั้ง Username หรือ Password ไม่ตรงกัน",
       });

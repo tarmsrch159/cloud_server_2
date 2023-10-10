@@ -37,25 +37,21 @@ db.connect((err) => {
 });
 
 //allow access for another domain
-// app.use((req, res, next) => {
-//   res.header("Access-Control-Allow-Origin", "https://frontend-user-test-deploy-awvw8mtzu-tanachais-projects.vercel.app");
-//   res.header(
-//     "Access-Control-Allow-Methods",
-//     "POST, GET, PUT, PATCH, DELETE, OPTIONS"
-//   );
-//   res.header(
-//     "Access-Control-Allow-Headers",
-//     "Content-Type, Option, Authorization"
-//   );
-//   return next();
-// });
-const corsOptions = {
-  origin: 'https://frontend-user-test-deploy-awvw8mtzu-tanachais-projects.vercel.app',
-  credentials: true,
-};
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "https://frontend-user-test-deploy-awvw8mtzu-tanachais-projects.vercel.app");
+  res.header(
+    "Access-Control-Allow-Methods",
+    "POST, GET, PUT, PATCH, DELETE, OPTIONS"
+  );
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Content-Type, Option, Authorization"
+  );
+  return next();
+});
 
 app.use(express.json());
-app.use(cors(corsOptions));
+app.use(cors());
 app.use(express.static("public"));
 
 const storage = multer.diskStorage({
@@ -125,7 +121,6 @@ app.post("/login_user", (req, res) => {
             id_card: id_card,
             result: result,
           });
-          const space = "";
           const text = ` กรุณาใช้ เลขประจำตัวการสอบ: ${reg_id} '' เลขบัตรประจำตัวประชาชน: ของท่าน `;
           notiEvent(token_Line, text);
         } else {
@@ -137,60 +132,6 @@ app.post("/login_user", (req, res) => {
     }
   });
 });
-
-//Pay
-app.get("/check_payment/:id", (req, res) => {
-  const reg_id = req.params.id;
-  const query = `SELECT reg_id, id_card, course_name.name_th, course_name.name_en, candidate, prefix, name, lastname, nationality, tel, email, educational, branch, permission, receipt, gender, profile_img,
-  CONCAT( DATE_FORMAT( birthday , '%d' ), '/', DATE_FORMAT( birthday , '%m' ) , '/', DATE_FORMAT( birthday , '%Y' ) +543 ) AS Thaibirthday, provinces.name_th AS province_name, amphures.name_th AS amphure_name, districts.name_th AS district_name
-  FROM member
-  INNER JOIN course_name 
-  ON member.course=course_name.id
-  INNER JOIN provinces 
-  ON member.province=provinces.id
-  INNER JOIN amphures
-  on member.amphure=amphures.id
-  INNER JOIN districts
-  on member.district=districts.id
-  WHERE reg_id = ?`;
-
-  db.query(query, [reg_id], (err, result) => {
-    if (result) {
-      res.send(result);
-    } else {
-      res.send(err);
-    }
-  });
-});
-
-app.post("/auth_if", (req, res, next) => {
-  if (
-    req.headers.authorization &&
-    req.headers.authorization.startsWith("Bearer")
-  ) {
-    try {
-      const token_auth = req.headers.authorization.split(" ")[1];
-      const decoded = jwt.verify(token_auth, secret);
-      res.json({ status: true, decoded });
-      next();
-    } catch (err) {
-      res.json({ status: false, message: err.message });
-    }
-  }
-});
-
-app.get("/user_information/:id", (req, res) => {
-  const id = req.params.id;
-  db.query("SELECT * FROM member WHERE id = ?", id, (err, result) => {
-    if (err) {
-      res.json({ ERROR: err });
-    } else {
-      res.json({ Status: "OK", result });
-    }
-  });
-});
-
-//Check_idcard and Insert a user Information into a database
 
 app.post("/add_member", upload.single("image"), (req, res) => {
   const reg_day = req.body.reg_day;
@@ -299,6 +240,61 @@ app.post("/add_member", upload.single("image"), (req, res) => {
     });
   });
 });
+//Pay
+app.get("/check_payment/:id", (req, res) => {
+  const reg_id = req.params.id;
+  const query = `SELECT reg_id, id_card, course_name.name_th, course_name.name_en, candidate, prefix, name, lastname, nationality, tel, email, educational, branch, permission, receipt, gender, profile_img,
+  CONCAT( DATE_FORMAT( birthday , '%d' ), '/', DATE_FORMAT( birthday , '%m' ) , '/', DATE_FORMAT( birthday , '%Y' ) +543 ) AS Thaibirthday, provinces.name_th AS province_name, amphures.name_th AS amphure_name, districts.name_th AS district_name
+  FROM member
+  INNER JOIN course_name 
+  ON member.course=course_name.id
+  INNER JOIN provinces 
+  ON member.province=provinces.id
+  INNER JOIN amphures
+  on member.amphure=amphures.id
+  INNER JOIN districts
+  on member.district=districts.id
+  WHERE reg_id = ?`;
+
+  db.query(query, [reg_id], (err, result) => {
+    if (result) {
+      res.send(result);
+    } else {
+      res.send(err);
+    }
+  });
+});
+
+app.post("/auth_if", (req, res, next) => {
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith("Bearer")
+  ) {
+    try {
+      const token_auth = req.headers.authorization.split(" ")[1];
+      const decoded = jwt.verify(token_auth, secret);
+      res.json({ status: true, decoded });
+      next();
+    } catch (err) {
+      res.json({ status: false, message: err.message });
+    }
+  }
+});
+
+app.get("/user_information/:id", (req, res) => {
+  const id = req.params.id;
+  db.query("SELECT * FROM member WHERE id = ?", id, (err, result) => {
+    if (err) {
+      res.json({ ERROR: err });
+    } else {
+      res.json({ Status: "OK", result });
+    }
+  });
+});
+
+//Check_idcard and Insert a user Information into a database
+
+
 
 app.get("/get_provinces", (req, res) => {
   db.query(

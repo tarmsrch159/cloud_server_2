@@ -23,7 +23,7 @@ const token_Line = "RAl3CtmN2KGt6eu5g7ZvTdtpA2J1VygIzcnyhiP7VXt";
 const db = mysql.createConnection({
   host: "bqmn5uzoqbl28n6wo1ug-mysql.services.clever-cloud.com",
   user: "ui43my666qg92sci",
-  password: "ui43my666qg92sci",
+  password: "rlDPwE0lRpJ2c9P3e2aI",
   database: "bqmn5uzoqbl28n6wo1ug",
 });
 

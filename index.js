@@ -408,11 +408,13 @@ app.post("/add_admin", (req, res) => {
     sql,
     [name, lastname, tel, username, pwd, permission],
     (err, result) => {
-      if (err) {
+      if (result[0].username > 0) {
+        res.json({ STATUS: "ชื่อผู้ใช้มีผู้ใช้งานแล้ว" })
         res.send(err);
         console.log(err);
-      }else if(result[0].username > 0){
-        res.json({ STATUS: "ชื่อผู้ใช้มีผู้ใช้งานแล้ว" })
+      }if(err){
+        res.send(err);
+        console.log(err);
       } 
       else {
         res.json({ STATUS: "เพิ่มข้อมูลเสร็จสิ้น" });

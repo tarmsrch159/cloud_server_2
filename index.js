@@ -422,16 +422,18 @@ app.get("/display_all_user", (req, res) => {
   const { page, pageSize } = req.query;
   const offset = (page - 1) * pageSize;
 
-  const query = `SELECT reg_id, id_card, course, candidate, prefix, name, lastname, nationality, tel, email, educational, branch, permission, receipt, gender,
+  const query = `SELECT reg_id, id_card, course_name.name_th AS course_name_th, candidate, prefix, name, lastname, nationality, tel, email, educational, branch, permission, receipt, gender,
   CONCAT( DATE_FORMAT( birthday , '%Y' ), '/', DATE_FORMAT( birthday , '%m' ) , '/', DATE_FORMAT( birthday , '%d' ) ) AS Thaibirthday, provinces.name_th AS province_name, amphures.name_th AS amphure_name, districts.name_th AS district_name
   FROM member
+  INNER JOIN course_name
+  ON member.course=course_name.id
   INNER JOIN provinces 
   ON member.province=provinces.id
   INNER JOIN amphures
   on member.amphure=amphures.id
   INNER JOIN districts
   on member.district=districts.id
-  ORDER BY reg_id ASC
+  ORDER BY reg_id ASC;
   LIMIT ${offset}, ${pageSize}`;
 
   db.query(query, (err, results) => {

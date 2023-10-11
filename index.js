@@ -411,7 +411,10 @@ app.post("/add_admin", (req, res) => {
       if (err) {
         res.send(err);
         console.log(err);
-      } else {
+      }else if(result[0].username > 0){
+        res.json({ STATUS: "ชื่อผู้ใช้มีผู้ใช้งานแล้ว" })
+      } 
+      else {
         res.json({ STATUS: "เพิ่มข้อมูลเสร็จสิ้น" });
       }
     }

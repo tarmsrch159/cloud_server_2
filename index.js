@@ -390,7 +390,7 @@ app.post("/admin_login", (req, res) => {
       console.error("Error executing Mysql Query:", err);
       res.status(500).json({ error: "An error occurred" });
     }
-    if (result[0].length === 0) {
+    if (result.length === 0) {
       res.json({
         Error: "กรุณาเข้าสู่ระบบใหม่อีกครั้ง Username หรือ Password ไม่ตรงกัน",
       });
@@ -593,7 +593,7 @@ app.get("/user_score/:month/:course", (req, res) => {
   const { page, pageSize } = req.query;
   const offset = (page - 1) * pageSize;
 
-  const query = `SELECT reg_id, id_card, course_name.name_th AS course_name_th, candidate, prefix, name, lastname, 
+  const query = `SELECT reg_id, id_card, course, candidate, prefix, name, lastname, 
   nationality, tel, email, educational, branch, permission, receipt, gender, kn_score,
   profi_score, sum_score, pass_fail, CONCAT( DATE_FORMAT( reg_day , '%Y' ), '/', DATE_FORMAT( reg_day , '%m' ) , '/', DATE_FORMAT( reg_day , '%d' ) ) AS change_reg_day, provinces.name_th AS province_name, amphures.name_th AS amphure_name, districts.name_th AS district_name
   FROM member

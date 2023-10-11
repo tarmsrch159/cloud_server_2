@@ -408,7 +408,7 @@ app.post("/add_admin", (req, res) => {
     sql,
     [name, lastname, tel, username, pwd, permission],
     (err, result) => {
-      if (result[0].username > 0) {
+      if (result[0].username.length > 0) {
         res.json({ STATUS: "ชื่อผู้ใช้มีผู้ใช้งานแล้ว" })
         res.send(err);
         console.log(err);

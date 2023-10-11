@@ -433,7 +433,7 @@ app.get("/display_all_user", (req, res) => {
   on member.amphure=amphures.id
   INNER JOIN districts
   on member.district=districts.id
-  ORDER BY reg_id ASC;
+  ORDER BY reg_id ASC
   LIMIT ${offset}, ${pageSize}`;
 
   db.query(query, (err, results) => {

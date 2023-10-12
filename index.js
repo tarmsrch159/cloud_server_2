@@ -172,8 +172,11 @@ app.post("/add_member", upload.single("image"), (req, res) => {
   const district = req.body.district;
   const line_id = req.body.line_id;
   const img = req.file.filename;
+  const id_card_Img = req.file.filename;
+  const educational_Img = req.file.filename;
   const pass_fail = "";
   const book_id = "";
+  console.log(req.file)
   const { kn_score, profi_score, sum_score } = req.body;
   const count_max_sql = `SELECT MAX(id) +1 AS id  FROM member;`;
 
@@ -181,7 +184,7 @@ app.post("/add_member", upload.single("image"), (req, res) => {
     name, lastname, name_en, lastname_en,nationality, birthday, tel, 
     email, address, educational, branch,province, 
     amphure, district, gender, permission, receipt, 
-    profile_img, reg_day , kn_score, profi_score, sum_score, pass_fail, book_id)    
+    profile_img, reg_day , kn_score, profi_score, sum_score, pass_fail, book_id, id_card_Img, educational_Img)    
     VALUES (?, ?, ?, ?, ?, 
     ?, ?, ?, ?, ?, 
     ?, ?, ?, ?, ?,
@@ -228,6 +231,8 @@ app.post("/add_member", upload.single("image"), (req, res) => {
           sum_score,
           pass_fail,
           book_id,
+          id_card_Img,
+          educational_Img
         ],
         (err, result) => {
           if (err) {
@@ -245,8 +250,8 @@ app.post("/add_member", upload.single("image"), (req, res) => {
               return;
             }
             res.json({ STATUS: "ลงทะเบียนเสร็จสิ้น", rows, id_card: id_card });
-            const text = ` กรุณาใช้ เลขประจำตัวการสอบ: ${rows[0].reg_id} '' เลขบัตรประจำตัวประชาชน: ${id_card} `;
-            notiEvent(token_Line, text);
+            // const text = ` กรุณาใช้ เลขประจำตัวการสอบ: ${rows[0].reg_id} '' เลขบัตรประจำตัวประชาชน: ${id_card} `;
+            // notiEvent(token_Line, text);
           });
         }
       );

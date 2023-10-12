@@ -402,25 +402,32 @@ app.post("/admin_login", (req, res) => {
 
 app.post("/add_admin", (req, res) => {
   const { name, lastname, tel, username, pwd, permission } = req.body;
-  const sql =
-    "INSERT INTO admin (name, lastname, tel, username, password, permission) VALUES (?, ?, ?, ?, ?, ?)";
-  db.query(
-    sql,
-    [name, lastname, tel, username, pwd, permission],
-    (err, result) => {
-      if (result[0].username.length > 0) {
-        res.json({ STATUS: "ชื่อผู้ใช้มีผู้ใช้งานแล้ว" })
-        res.send(err);
-        console.log(err);
-      }if(err){
-        res.send(err);
-        console.log(err);
-      } 
-      else {
-        res.json({ STATUS: "เพิ่มข้อมูลเสร็จสิ้น" });
-      }
+  const sql = "INSERT INTO admin (name, lastname, tel, username, password, permission) VALUES (?, ?, ?, ?, ?, ?)";
+  const user_exist = `SELECT * FROM admin WHERE username = ?`
+  db.query(user_exist, [username],(err, result_exist) => {
+    if(result_exist.length === 1){
+      res.json({ STATUS: "ชื่อผู้ใช้มีผู้ใช้งานแล้ว" })
+      return false
     }
-  );
+    if(err){
+      res.send(err)
+    }else{
+      db.query(
+        sql,
+        [name, lastname, tel, username, pwd, permission],
+        (err, result) => {
+          if(err){
+            res.send(err);
+            console.log(err);
+          } 
+          else {
+            res.json({ STATUS: "เพิ่มข้อมูลเสร็จสิ้น" });
+          }
+        }
+      );
+    }
+  })
+  
 });
 
 app.get("/display_all_user", (req, res) => {

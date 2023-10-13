@@ -202,12 +202,12 @@ app.post("/add_member", cpUpload, (req, res) => {
     name, lastname, name_en, lastname_en,nationality, birthday, tel, 
     email, address, educational, branch,province, 
     amphure, district, gender, permission, receipt, 
-    profile_img, reg_day , kn_score, profi_score, sum_score, pass_fail,id_card_Img, educational_Img)    
+    profile_img, reg_day , kn_score, profi_score, sum_score, pass_fail, book_id,id_card_Img, educational_Img)    
     VALUES (?, ?, ?, ?, ?, 
     ?, ?, ?, ?, ?, 
     ?, ?, ?, ?, ?,
     ?, ?, ?, ?, ?, 
-    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) `;
+    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) `;
   db.query(count_max_sql, (err, result) => {
     function padWithLeadingZeros(num, totalLength) {
       return String(num).padStart(totalLength, "0");

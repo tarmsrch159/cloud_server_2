@@ -69,6 +69,14 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 
+
+
+app.post('/uploadfile',  upload.array('image', 5),(req,res) => {
+  if(req.files){
+    console.log(req.files)
+  }
+})
+
 app.get("/show_all_data", (req, res) => {
   const query = "SELECT * FROM member"
   db.query(query, (err, results) => {
@@ -80,6 +88,8 @@ app.get("/show_all_data", (req, res) => {
     }
   })
 })
+
+
 
 //upload_payment
 app.put("/payment/:id", upload.single("image"), (req, res) => {
@@ -146,6 +156,12 @@ app.post("/login_user", (req, res) => {
   });
 });
 
+var cpUpload = upload.fields([
+  { name: 'profile_img', maxCount: 5 }, 
+  { name:'id_card_img', maxCount: 5 },
+  { name:'educational_img', maxCount: 5 }
+])
+
 app.post("/add_member", upload.single("image"), (req, res) => {
   const reg_day = req.body.reg_day;
   const id_card = req.body.id_card;
@@ -171,9 +187,9 @@ app.post("/add_member", upload.single("image"), (req, res) => {
   const amphure = req.body.amphure;
   const district = req.body.district;
   const line_id = req.body.line_id;
-  const img = req.file.filename;
-  const id_card_Img = req.file.filename;
-  const educational_Img = req.file.filename;
+  const img =  req.files['profile_img'][0].filename != undefined ? req.files['profile_img'][0].filename : ''; 
+  const id_card_img = req.files['id_card_img'][0].filename != undefined ? req.files['id_card_img'][0].filename : ''; 
+  const educational_img = req.files['educational_img'][0].filename != undefined ? req.files['educational_img'][0].filename : ''; 
   const pass_fail = "";
   const book_id = "";
   console.log(req.file)
@@ -184,7 +200,7 @@ app.post("/add_member", upload.single("image"), (req, res) => {
     name, lastname, name_en, lastname_en,nationality, birthday, tel, 
     email, address, educational, branch,province, 
     amphure, district, gender, permission, receipt, 
-    profile_img, reg_day , kn_score, profi_score, sum_score, pass_fail, book_id, id_card_Img, educational_Img)    
+    profile_img, reg_day , kn_score, profi_score, sum_score, id_card_Img, educational_Img)    
     VALUES (?, ?, ?, ?, ?, 
     ?, ?, ?, ?, ?, 
     ?, ?, ?, ?, ?,
@@ -231,8 +247,8 @@ app.post("/add_member", upload.single("image"), (req, res) => {
           sum_score,
           pass_fail,
           book_id,
-          id_card_Img,
-          educational_Img
+          id_card_img,
+          educational_img
         ],
         (err, result) => {
           if (err) {

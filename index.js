@@ -163,7 +163,9 @@ var cpUpload = upload.fields([
 ])
 
 app.post("/add_member", cpUpload, (req, res) => {
-  console.log(req.files)
+  console.log(req.files['profile_img'])
+  console.log(req.files['id_card_img'])
+  console.log(req.files['educational_img'])
   const reg_day = req.body.reg_day;
   const id_card = req.body.id_card;
   // const reg_id = req.body.reg_id;

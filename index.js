@@ -157,7 +157,7 @@ app.post("/login_user", (req, res) => {
 });
 
 var cpUpload = upload.fields([
-  { name: 'profile_img', maxCount: 5 }, 
+  { name: 'image', maxCount: 5 }, 
   { name:'id_card_img', maxCount: 5 },
   { name:'educational_img', maxCount: 5 }
 ])
@@ -190,7 +190,7 @@ app.post("/add_member", cpUpload, (req, res) => {
   const amphure = req.body.amphure;
   const district = req.body.district;
   const line_id = req.body.line_id;
-  const img =  req.files['profile_img'][0].filename != undefined ? req.files['profile_img'][0].filename : ''; 
+  const img =  req.files['image'][0].filename != undefined ? req.files['image'][0].filename : ''; 
   const id_card_img = req.files['id_card_img'][0].filename != undefined ? req.files['id_card_img'][0].filename : ''; 
   const educational_img = req.files['educational_img'][0].filename != undefined ? req.files['educational_img'][0].filename : ''; 
   const pass_fail = "";

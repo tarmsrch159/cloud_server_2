@@ -162,7 +162,7 @@ var cpUpload = upload.fields([
   { name:'educational_img', maxCount: 5 }
 ])
 
-app.post("/add_member", upload.single("image"), (req, res) => {
+app.post("/add_member", cpUpload, (req, res) => {
   const reg_day = req.body.reg_day;
   const id_card = req.body.id_card;
   // const reg_id = req.body.reg_id;
@@ -192,7 +192,6 @@ app.post("/add_member", upload.single("image"), (req, res) => {
   const educational_img = req.files['educational_img'][0].filename != undefined ? req.files['educational_img'][0].filename : ''; 
   const pass_fail = "";
   const book_id = "";
-  console.log(req.file)
   const { kn_score, profi_score, sum_score } = req.body;
   const count_max_sql = `SELECT MAX(id) +1 AS id  FROM member;`;
 
@@ -200,16 +199,12 @@ app.post("/add_member", upload.single("image"), (req, res) => {
     name, lastname, name_en, lastname_en,nationality, birthday, tel, 
     email, address, educational, branch,province, 
     amphure, district, gender, permission, receipt, 
-<<<<<<< HEAD
     profile_img, reg_day , kn_score, profi_score, sum_score, id_card_Img, educational_Img)    
-=======
-    profile_img, reg_day , kn_score, profi_score, sum_score, pass_fail, book_id)    
->>>>>>> d8f7fbad1f9e08f8eeae8e4e0828cf55654a3c16
     VALUES (?, ?, ?, ?, ?, 
     ?, ?, ?, ?, ?, 
     ?, ?, ?, ?, ?,
     ?, ?, ?, ?, ?, 
-    ?, ?, ?, ?, ?, ?, ?, ?) `;
+    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) `;
   db.query(count_max_sql, (err, result) => {
     function padWithLeadingZeros(num, totalLength) {
       return String(num).padStart(totalLength, "0");

@@ -20,39 +20,43 @@ const { notiEvent } = require("./Functions/Notify");
 const token_Line = "RAl3CtmN2KGt6eu5g7ZvTdtpA2J1VygIzcnyhiP7VXt";
 
 //Variable for conection to database
-const db_config = mysql.createConnection({
+const db = mysql.createConnection({
   host: "bqmn5uzoqbl28n6wo1ug-mysql.services.clever-cloud.com",
   user: "ui43my666qg92sci",
   password: "rlDPwE0lRpJ2c9P3e2aI",
   database: "bqmn5uzoqbl28n6wo1ug",
 });
 
-var db;
 
-function handleDisconnect(){
-  db = mysql.createConnection(db_config)
+setInterval(function () {
+  db.query('SELECT 1');
+}, 5000);
+// var db;
 
-  function err(error){
-    if(error){
-      console.log('error when connecting to db', error)
-      setTimeout(handleDisconnect, 2000);
-    }
-  };
+// function handleDisconnect(){
+//   db = mysql.createConnection(db_config)
 
-  err()
+//   function err(error){
+//     if(error){
+//       console.log('error when connecting to db', error)
+//       setTimeout(handleDisconnect, 2000);
+//     }
+//   };
 
-  db.on('error', function(err){
-    console.log('db error', error)
-    if(err.code === 'PROTOCOL_CONNECTION_LOST') { // Connection to the MySQL server is usually
-      handleDisconnect();                         // lost due to either server restart, or a
-    } else {                                      // connnection idle timeout (the wait_timeout
-      throw err;                                  // server variable configures this)
-    }
-  })
+//   err()
 
-}
+//   db.on('error', function(err){
+//     console.log('db error', error)
+//     if(err.code === 'PROTOCOL_CONNECTION_LOST') { // Connection to the MySQL server is usually
+//       handleDisconnect();                         // lost due to either server restart, or a
+//     } else {                                      // connnection idle timeout (the wait_timeout
+//       throw err;                                  // server variable configures this)
+//     }
+//   })
 
-handleDisconnect()
+// }
+
+// handleDisconnect()
 
 //Conection to database
 db.connect((err) => {

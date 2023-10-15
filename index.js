@@ -30,7 +30,10 @@ const db = mysql.createConnection({
 
 setInterval(function () {
   db.query('SELECT 1');
+  
+  console.log('force database alive')
 }, 5000);
+
 // var db;
 
 // function handleDisconnect(){

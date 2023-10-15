@@ -20,12 +20,37 @@ const { notiEvent } = require("./Functions/Notify");
 const token_Line = "RAl3CtmN2KGt6eu5g7ZvTdtpA2J1VygIzcnyhiP7VXt";
 
 //Variable for conection to database
-const db = mysql.createConnection({
+const db_config = mysql.createConnection({
   host: "bqmn5uzoqbl28n6wo1ug-mysql.services.clever-cloud.com",
   user: "ui43my666qg92sci",
   password: "rlDPwE0lRpJ2c9P3e2aI",
   database: "bqmn5uzoqbl28n6wo1ug",
 });
+
+var db;
+
+function handleDisconnect(){
+  db = mysql.createConnection(db_config)
+
+  db.connect(function err(){
+    if(err){
+      console.log('error when connecting to db', err)
+      setTimeout(handleDisconnect, 2000);
+    }
+  });
+
+  db.on('error', function(err){
+    console.log('db error', error)
+    if(err.code === 'PROTOCOL_CONNECTION_LOST') { // Connection to the MySQL server is usually
+      handleDisconnect();                         // lost due to either server restart, or a
+    } else {                                      // connnection idle timeout (the wait_timeout
+      throw err;                                  // server variable configures this)
+    }
+  })
+
+}
+
+handleDisconnect()
 
 //Conection to database
 db.connect((err) => {

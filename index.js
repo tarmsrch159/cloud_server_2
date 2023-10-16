@@ -3,7 +3,6 @@ const app = express();
 const cors = require("cors");
 const mysql = require("mysql");
 const PORT = process.env.PORT || 3000;
-const reconnect = require('reconnect');
 
 //Library's about hashing password
 const bcrypt = require("bcrypt");
@@ -84,14 +83,14 @@ connectWithRetry(); // Start the initial connection
 
 // handleDisconnect()
 
-//Conection to database
-// db.connect((err) => {
-//   if (err) {
-//     console.log(err);
-//   } else {
-//     console.log("Connected to My database");
-//   }
-// });
+// Conection to database
+db.connect((err) => {
+  if (err) {
+    console.log(err);
+  } else {
+    console.log("Connected to My database");
+  }
+});
 
 //allow access for another domain
 app.use((req, res, next) => {

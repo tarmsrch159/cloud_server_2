@@ -3,6 +3,7 @@ const app = express();
 const cors = require("cors");
 const mysql = require("mysql");
 const PORT = process.env.PORT || 3000;
+const reconnect = require('reconnect');
 
 //Library's about hashing password
 const bcrypt = require("bcrypt");
@@ -28,11 +29,30 @@ const db = mysql.createConnection({
 });
 
 
-setInterval(function () {
-  db.query('SELECT 1');
+function createConnection() {
+  const connection = db.connect(); // Replace with your connection logic
+  // Add event listeners and handle errors here
+  return connection;
+}
+
+reconnect(createConnection)
+  .on('connect', (connection) => {
+    console.log('Connected to the server.');
+    // You can now use the connection for your application
+  })
+  .on('reconnect', (n, delay) => {
+    console.log(`Reconnecting attempt ${n} in ${delay} ms...`);
+  })
+  .on('disconnect', () => {
+    console.log('Disconnected from the server. Reconnecting...');
+  })
+  .connect();
+
+// setInterval(function () {
+//   db.query('SELECT 1');
   
-  console.log('force database alive')
-}, 5000);
+//   console.log('force database alive')
+// }, 5000);
 
 // var db;
 
@@ -62,13 +82,13 @@ setInterval(function () {
 // handleDisconnect()
 
 //Conection to database
-db.connect((err) => {
-  if (err) {
-    console.log(err);
-  } else {
-    console.log("Connected to My database");
-  }
-});
+// db.connect((err) => {
+//   if (err) {
+//     console.log(err);
+//   } else {
+//     console.log("Connected to My database");
+//   }
+// });
 
 //allow access for another domain
 app.use((req, res, next) => {

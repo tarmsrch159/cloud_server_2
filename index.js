@@ -55,11 +55,11 @@ function connectWithRetry() {
 
 connectWithRetry(); // Start the initial connection
 
-// setInterval(function () {
-//   db.query('SELECT 1');
+setInterval(function () {
+  db.query('SELECT 1');
   
-//   console.log('force database alive')
-// }, 5000);
+  console.log('force database alive')
+}, 5000);
 
 // var db;
 

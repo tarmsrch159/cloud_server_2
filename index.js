@@ -34,18 +34,23 @@ const db = mysql.createConnection({
 
 function connectWithRetry() {
   const connection = db.connect(); // Replace with your connection logic
+  try{
+    connection.on('connect', () => {
+      console.log('Connected to the server.');
+      // You can now use the connection for your application
+    });
+  
+    connection.on('close', () => {
+      console.log('Connection closed. Reconnecting...');
+      setTimeout(() => {
+        connectWithRetry();
+      }, 1000); // Retry after 1 second (adjust the delay as needed)
+    });
+  }catch (err){
+    console.log("Error: ", err)
 
-  connection.on('connect', () => {
-    console.log('Connected to the server.');
-    // You can now use the connection for your application
-  });
-
-  connection.on('close', () => {
-    console.log('Connection closed. Reconnecting...');
-    setTimeout(() => {
-      connectWithRetry();
-    }, 1000); // Retry after 1 second (adjust the delay as needed)
-  });
+  }
+ 
 }
 
 connectWithRetry(); // Start the initial connection

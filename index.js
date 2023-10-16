@@ -28,6 +28,8 @@ const db = mysql.createConnection({
   database: "bqmn5uzoqbl28n6wo1ug",
 });
 
+// asdasd
+
 
 function createConnection() {
   const connection = db.connect(); // Replace with your connection logic

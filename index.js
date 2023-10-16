@@ -84,13 +84,13 @@ connectWithRetry(); // Start the initial connection
 // handleDisconnect()
 
 // Conection to database
-db.connect((err) => {
-  if (err) {
-    console.log(err);
-  } else {
-    console.log("Connected to My database");
-  }
-});
+// db.connect((err) => {
+//   if (err) {
+//     console.log(err);
+//   } else {
+//     console.log("Connected to My database");
+//   }
+// });
 
 //allow access for another domain
 app.use((req, res, next) => {

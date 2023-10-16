@@ -31,24 +31,25 @@ const db = mysql.createConnection({
 // asdasd
 
 
-function createConnection() {
-  const connection = db.connect(); // Replace with your connection logic
-  // Add event listeners and handle errors here
-  return connection;
-}
 
-reconnect(createConnection)
-  .on('connect', (connection) => {
+
+function connectWithRetry() {
+  const connection = db.connect(); // Replace with your connection logic
+
+  connection.on('connect', () => {
     console.log('Connected to the server.');
     // You can now use the connection for your application
-  })
-  .on('reconnect', (n, delay) => {
-    console.log(`Reconnecting attempt ${n} in ${delay} ms...`);
-  })
-  .on('disconnect', () => {
-    console.log('Disconnected from the server. Reconnecting...');
-  })
-  .connect();
+  });
+
+  connection.on('close', () => {
+    console.log('Connection closed. Reconnecting...');
+    setTimeout(() => {
+      connectWithRetry();
+    }, 1000); // Retry after 1 second (adjust the delay as needed)
+  });
+}
+
+connectWithRetry(); // Start the initial connection
 
 // setInterval(function () {
 //   db.query('SELECT 1');

@@ -851,10 +851,11 @@ app.put("/sum_score", (req, res) => {
     );
   } else if(total_score > 100){
     res.json({ status: "กรุณากรอกคะแนนให้ถูกต้อง" });
+    return false
   } else {
     db.query(
       sql,
-      [kn_score, profi_score, total_score, "ผ่าน", "", reg_id],
+      [kn_score, profi_score, total_score, "ไม่ผ่าน", "", reg_id],
       (err, result) => {
         if (err) {
           res.json({ status: "false" });

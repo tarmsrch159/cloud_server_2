@@ -816,7 +816,10 @@ app.put("/sum_score", (req, res) => {
   // const sql_permission = "SELECT sum_score FROM member WHERE reg_id = ?";
   // const update_book = 'UPDATE member SET book_id =? WHERE reg_id = ?'
   const text = "";
-  if (total_score > 69) {
+  if (total_score > 100 ) {
+    res.json({ status: "กรุณากรอกคะแนนให้ถูกต้อง" });
+    return false
+  } else if (total_score > 69 ) {
     db.query(sql_book_id, text, (err, result_1) => {
       function padWithLeadingZeros(num, totalLength) {
         return String(num).padStart(totalLength, "0");
@@ -836,7 +839,7 @@ app.put("/sum_score", (req, res) => {
         }
       );
     });
-  } else if (total_score >= 50 && total_score <= 69) {
+  } else if(total_score >= 50 && total_score <= 69){
     db.query(
       sql,
       [kn_score, profi_score, total_score, "ผ่าน", "", reg_id],
@@ -849,9 +852,6 @@ app.put("/sum_score", (req, res) => {
         }
       }
     );
-  } else if(total_score > 100){
-    res.json({ status: "กรุณากรอกคะแนนให้ถูกต้อง" });
-    return false
   } else {
     db.query(
       sql,

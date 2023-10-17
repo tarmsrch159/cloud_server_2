@@ -173,7 +173,7 @@ app.post("/login_user", (req, res) => {
   const reg_id = req.body.reg_id;
   const id_card = req.body.id_card;
 
-  var query = `SELECT reg_id, id_card, line_id,course_name.name_th AS course_name_th, candidate, prefix, name, lastname, nationality, tel, email, educational, branch, permission, receipt, gender, profile_img, kn_score, profi_score, sum_score, pass_fail, book_id,
+  var query = `SELECT reg_id, id_card, line_id,course_name.name_th AS course_name_th, candidate, address, prefix, name, lastname, nationality, tel, email, educational, branch, permission, receipt, gender, profile_img, kn_score, profi_score, sum_score, pass_fail, book_id,
   CONCAT( DATE_FORMAT( birthday , '%Y' ), '/', DATE_FORMAT( birthday , '%m' ) , '/', DATE_FORMAT( birthday , '%d' ) ) AS Thaibirthday, provinces.name_th AS province_name, amphures.name_th AS amphure_name, districts.name_th AS district_name
   FROM member
   INNER JOIN course_name

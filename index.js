@@ -446,7 +446,7 @@ app.get("/do_not_pay", (req, res) => {
     INNER JOIN course_name 
     ON member.course=course_name.id
     WHERE permission = "รอชำระเงิน" 
-    ORDER BY reg_id ASC
+    ORDER BY reg_id DESC
     LIMIT ${offset}, ${pageSize};`,
     (err, results) => {
       if (err) {

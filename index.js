@@ -20,7 +20,7 @@ const { notiEvent } = require("./Functions/Notify");
 const token_Line = "RAl3CtmN2KGt6eu5g7ZvTdtpA2J1VygIzcnyhiP7VXt";
 
 //Variable for conection to database
-const db = mysql.createConnection({
+const db = mysql.createPool({
   host: "bqmn5uzoqbl28n6wo1ug-mysql.services.clever-cloud.com",
   user: "ui43my666qg92sci",
   password: "rlDPwE0lRpJ2c9P3e2aI",
@@ -28,38 +28,42 @@ const db = mysql.createConnection({
 });
 
 // asdasd
-
-
-
-// reconnect
-function connectWithRetry() {
-  const connection = db.connect(); // Replace with your connection logic
-  try{
-    connection.on('connect', () => {
-      console.log('Connected to the server.');
-      // You can now use the connection for your application
-    });
-  
-    connection.on('close', () => {
-      console.log('Connection closed. Reconnecting...');
-      setTimeout(() => {
-        connectWithRetry();
-      }, 1000); // Retry after 1 second (adjust the delay as needed)
-    });
-  }catch (err){
-    console.log("Error: ", err)
-
-  }
- 
+function keepAlive() { 
+  db.getConnection(function(err, connection){
+    if(err) { console.error('mysql keepAlive err', err); return; }
+    console.log('ping db')
+    connection.ping();     // this is what you want
+    connection.release();
+  });
 }
 
-connectWithRetry(); // Start the initial connection
+setInterval(keepAlive, 60000);
 
-setInterval(function () {
-  db.query('SELECT 1');
+// reconnect
+// function connectWithRetry() {
+//   const connection = db.connect(); // Replace with your connection logic
+//   try{
+//     connection.on('connect', () => {
+//       console.log('Connected to the server.');
+//       // You can now use the connection for your application
+//     });
   
-  console.log('force database alive')
-}, 5000);
+//     connection.on('close', () => {
+//       console.log('Connection closed. Reconnecting...');
+//       setTimeout(() => {
+//         connectWithRetry();
+//       }, 1000); // Retry after 1 second (adjust the delay as needed)
+//     });
+//   }catch (err){
+//     console.log("Error: ", err)
+
+//   }
+ 
+// }
+
+// connectWithRetry(); // Start the initial connection
+
+
 
 // var db;
 

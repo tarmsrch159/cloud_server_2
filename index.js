@@ -838,7 +838,8 @@ app.put("/sum_score", (req, res) => {
             res.json({ status: "false" });
             console.log(err);
           } else {
-            res.json({ status: "true", result });
+            // res.json({ status: "true", result });
+            res.send(result)
           }
         }
       );

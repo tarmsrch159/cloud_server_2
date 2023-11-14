@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const mysql = require("mysql");
+const bodyParser = require("body-parser");
 const PORT = process.env.PORT || 3000;
 
 //Library's about hashing password
@@ -28,11 +29,17 @@ const db = mysql.createPool({
 });
 
 // asdasd
-function keepAlive() { 
-  db.getConnection(function(err, connection){
-    if(err) { console.error('mysql keepAlive err', err); return; }
-    console.log('ping db')
-    connection.ping();     // this is what you want
+app.use(bodyParser.json());
+
+// asdasd
+function keepAlive() {
+  db.getConnection(function (err, connection) {
+    if (err) {
+      console.error("mysql keepAlive err", err);
+      return;
+    }
+    console.log("ping db");
+    connection.ping(); // this is what you want
     connection.release();
   });
 }
@@ -47,7 +54,7 @@ setInterval(keepAlive, 60000);
 //       console.log('Connected to the server.');
 //       // You can now use the connection for your application
 //     });
-  
+
 //     connection.on('close', () => {
 //       console.log('Connection closed. Reconnecting...');
 //       setTimeout(() => {
@@ -58,12 +65,10 @@ setInterval(keepAlive, 60000);
 //     console.log("Error: ", err)
 
 //   }
- 
+
 // }
 
 // connectWithRetry(); // Start the initial connection
-
-
 
 // var db;
 
@@ -103,7 +108,10 @@ setInterval(keepAlive, 60000);
 
 //allow access for another domain
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "https://frontend-user-test-deploy-awvw8mtzu-tanachais-projects.vercel.app");
+  res.header(
+    "Access-Control-Allow-Origin",
+    "https://frontend-user-test-deploy-awvw8mtzu-tanachais-projects.vercel.app"
+  );
   res.header(
     "Access-Control-Allow-Methods",
     "POST, GET, PUT, PATCH, DELETE, OPTIONS"
@@ -133,28 +141,23 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-
-
-
-app.post('/uploadfile',  upload.array('image', 5),(req,res) => {
-  if(req.files){
-    console.log(req.files)
+app.post("/uploadfile", upload.array("image", 5), (req, res) => {
+  if (req.files) {
+    console.log(req.files);
   }
-})
+});
 
 app.get("/show_all_data", (req, res) => {
-  const query = "SELECT * FROM member"
+  const query = "SELECT * FROM member";
   db.query(query, (err, results) => {
-    if(err){
-      console.log(err)
-      res.send(err)
-    }else{
-      res.send(results)
+    if (err) {
+      console.log(err);
+      res.send(err);
+    } else {
+      res.send(results);
     }
-  })
-})
-
-
+  });
+});
 
 //upload_payment
 app.put("/payment/:id", upload.single("image"), (req, res) => {
@@ -222,15 +225,15 @@ app.post("/login_user", (req, res) => {
 });
 
 var cpUpload = upload.fields([
-  { name: 'image', maxCount: 5 }, 
-  { name:'id_card_img', maxCount: 5 },
-  { name:'educational_img', maxCount: 5 }
-])
+  { name: "image", maxCount: 5 },
+  { name: "id_card_img", maxCount: 5 },
+  { name: "educational_img", maxCount: 5 },
+]);
 
 app.post("/add_member", cpUpload, (req, res) => {
   // console.log(req.files['profile_img'])
-  console.log(req.files['id_card_img'][0].filename)
-  console.log(req.files['educational_img'][0].filename)
+  console.log(req.files["id_card_img"][0].filename);
+  console.log(req.files["educational_img"][0].filename);
   const reg_day = req.body.reg_day;
   const id_card = req.body.id_card;
   // const reg_id = req.body.reg_id;
@@ -244,6 +247,7 @@ app.post("/add_member", cpUpload, (req, res) => {
   const course = req.body.course;
   const candidate = req.body.candidate;
   const prefix = req.body.prefix;
+  const prefixEN = req.body.prefixEN;
   const nationality = req.body.nationality;
   const birthday = req.body.birthday;
   const tel = req.body.tel;
@@ -255,15 +259,24 @@ app.post("/add_member", cpUpload, (req, res) => {
   const amphure = req.body.amphure;
   const district = req.body.district;
   const line_id = req.body.line_id;
-  const img =  req.files['image'][0].filename != undefined ? req.files['image'][0].filename : ''; 
-  const id_card_img = req.files['id_card_img'][0].filename != undefined ? req.files['id_card_img'][0].filename : ''; 
-  const educational_img = req.files['educational_img'][0].filename != undefined ? req.files['educational_img'][0].filename : ''; 
+  const img =
+    req.files["image"][0].filename != undefined
+      ? req.files["image"][0].filename
+      : "";
+  const id_card_img =
+    req.files["id_card_img"][0].filename != undefined
+      ? req.files["id_card_img"][0].filename
+      : "";
+  const educational_img =
+    req.files["educational_img"][0].filename != undefined
+      ? req.files["educational_img"][0].filename
+      : "";
   const pass_fail = "";
   const book_id = "";
   const { kn_score, profi_score, sum_score } = req.body;
   const count_max_sql = `SELECT MAX(id) +1 AS id  FROM member;`;
 
-  const query = `INSERT INTO member (reg_id, id_card, course, candidate, prefix, line_id,
+  const query = `INSERT INTO member (reg_id, id_card, course, candidate, prefix, prefixEN, line_id,
     name, lastname, name_en, lastname_en,nationality, birthday, tel, 
     email, address, educational, branch,province, 
     amphure, district, gender, permission, receipt, 
@@ -272,7 +285,7 @@ app.post("/add_member", cpUpload, (req, res) => {
     ?, ?, ?, ?, ?, 
     ?, ?, ?, ?, ?,
     ?, ?, ?, ?, ?, 
-    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) `;
+    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) `;
   db.query(count_max_sql, (err, result) => {
     function padWithLeadingZeros(num, totalLength) {
       return String(num).padStart(totalLength, "0");
@@ -289,6 +302,7 @@ app.post("/add_member", cpUpload, (req, res) => {
           course,
           candidate,
           prefix,
+          prefixEN,
           line_id,
           name,
           lastname,
@@ -315,7 +329,7 @@ app.post("/add_member", cpUpload, (req, res) => {
           pass_fail,
           book_id,
           id_card_img,
-          educational_img
+          educational_img,
         ],
         (err, result) => {
           if (err) {
@@ -395,13 +409,11 @@ app.get("/user_information/:id", (req, res) => {
 
 //Check_idcard and Insert a user Information into a database
 
-
-
 app.get("/get_provinces", (req, res) => {
   db.query(
     "SELECT id, name_th FROM provinces ORDER BY name_th ASC",
     (err, result) => {
-      if (result.length === 0) {
+      if (result === 0) {
         res.json({ Error: "Failed" });
       } else {
         res.send(result);
@@ -490,35 +502,91 @@ app.post("/admin_login", (req, res) => {
 
 app.post("/add_admin", (req, res) => {
   const { name, lastname, tel, username, pwd, permission } = req.body;
-  const sql = "INSERT INTO admin (name, lastname, tel, username, password, permission) VALUES (?, ?, ?, ?, ?, ?)";
-  const user_exist = `SELECT * FROM admin WHERE username = ?`
-  db.query(user_exist, [username],(err, result_exist) => {
-    if(result_exist.length === 1){
-      res.json({ STATUS: "ชื่อผู้ใช้มีผู้ใช้งานแล้ว" })
-      return false
+  const sql =
+    "INSERT INTO admin (name, lastname, tel, username, password, permission) VALUES (?, ?, ?, ?, ?, ?)";
+  const user_exist = `SELECT * FROM admin WHERE username = ?`;
+  db.query(user_exist, [username], (err, result_exist) => {
+    if (result_exist.length === 1) {
+      res.json({ STATUS: "ชื่อผู้ใช้มีผู้ใช้งานแล้ว" });
+      return false;
     }
-    if(err){
-      res.send(err)
-    }else{
+    if (err) {
+      res.send(err);
+    } else {
       db.query(
         sql,
         [name, lastname, tel, username, pwd, permission],
         (err, result) => {
-          if(err){
+          if (err) {
             res.send(err);
             console.log(err);
-          } 
-          else {
+          } else {
             res.json({ STATUS: "เพิ่มข้อมูลเสร็จสิ้น" });
           }
         }
       );
     }
-  })
-  
+  });
 });
 
-app.get("/display_all_user", (req, res) => {
+app.get("/display_all_user/:course", (req, res) => {
+  const month = req.params.month;
+  const course = req.params.course;
+  const { page, pageSize, fromDate, toDate } = req.query;
+  const offset = (page - 1) * pageSize;
+
+  // const query = `SELECT reg_id, id_card,course_name.name_th AS course_name_th, candidate, prefix, name, lastname, nationality, tel, email, educational, branch, permission, receipt, gender,
+  //  CONCAT( DATE_FORMAT( reg_day , '%Y' ), '/', DATE_FORMAT( reg_day , '%m' ) , '/', DATE_FORMAT( reg_day , '%d' ) ) AS change_reg_day , provinces.name_th AS province_name, amphures.name_th AS amphure_name, districts.name_th AS district_name
+  // FROM member m
+  // INNER JOIN course_name
+  // ON m.course=course_name.id
+  // INNER JOIN provinces
+  // ON m.province=provinces.id
+  // INNER JOIN amphures
+  // on m.amphure=amphures.id
+  // INNER JOIN districts
+  // on m.district=districts.id
+  // WHERE m.permission = 'ผู้สมัคร' AND MONTH(reg_day) = ? AND course = ?
+  // ORDER BY reg_id DESC
+  // LIMIT ${offset}, ${pageSize}`;
+
+  const query = `SELECT reg_id, CONCAT_WS('  ', name, lastname) AS ชื่อนามสกุล,  ' ' AS ลงชื่อมา, '13.00 น' AS เวลามา, ' ' AS ลงชื่อกลับ, '17.00 น. ' AS เวลากลับ
+  FROM member m
+  WHERE permission = 'ผู้สมัคร' AND reg_day >= ? AND reg_day <= ? AND course = ? AND pass_fail = ''
+  ORDER BY reg_id DESC
+  LIMIT ${offset}, ${pageSize}`;
+
+  // const query_1 = `SELECT reg_id ,course_name.name_th AS course_name_th, candidate, prefix, name, lastname,
+  // FROM member m
+  // INNER JOIN course_name
+  // ON m.course=course_name.id
+  // WHERE m.permission = 'ผู้สมัคร' AND MONTH(reg_day) = ? AND course = ?
+  // ORDER BY reg_id DESC
+  // LIMIT ${offset}, ${pageSize}`;
+
+  db.query(query, [fromDate, toDate, course], (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ err: "Internal Server Error" });
+      return;
+    }
+
+    const totalCountQuery = `SELECT COUNT(*) AS totalCount FROM member`;
+    db.query(totalCountQuery, (err, countResults) => {
+      // if (error) {
+      //   console.error(error);
+      //   res.status(500).json({ error: 'Internal Server Error' });
+      //   return;
+      // }
+      const totalCount = countResults[0].totalCount;
+      const totalPages = Math.ceil(totalCount / pageSize);
+
+      res.json({ data: results, totalPages });
+    });
+  });
+});
+
+app.get("/display_all_user_edit", (req, res) => {
   const { page, pageSize } = req.query;
   const offset = (page - 1) * pageSize;
 
@@ -533,7 +601,7 @@ app.get("/display_all_user", (req, res) => {
   on member.amphure=amphures.id
   INNER JOIN districts
   on member.district=districts.id
-  ORDER BY reg_id ASC
+  ORDER BY reg_id DESC
   LIMIT ${offset}, ${pageSize}`;
 
   db.query(query, (err, results) => {
@@ -672,21 +740,30 @@ app.put("/update_user_info", (req, res) => {
 });
 
 //update_permission
-app.put("/update_permission", (req, res) => {
-  const reg_id = req.body.reg_id;
+app.put("/update_permission", async (req, res) => {
+  const reg_id = req.body;
   const permission = req.body.permission;
+  const query_update = "UPDATE member SET permission = ? WHERE reg_id = ?";
+  // console.log(req.body)
 
-  db.query(
-    "UPDATE member SET permission = ? WHERE reg_id = ?",
-    [permission, reg_id],
-    (err, result) => {
+  await reg_id.forEach((items) => {
+    db.query(query_update, ["ผู้สมัคร", items], async (err, result) => {
       if (err) {
-        res.send(err);
-      } else {
-        res.send(result);
+        console.log(err);
       }
-    }
-  );
+    });
+  });
+  // db.query(
+  //   "UPDATE member SET permission = ? WHERE reg_id = ?",
+  //   ['ผู้สมัคร', reg_id],
+  //   (err, result) => {
+  //     if (err) {
+  //       res.send(err);
+  //     } else {
+  //       res.send({ status: true });
+  //     }
+  //   }
+  // );
 });
 
 app.get("/user_score/:month/:course", (req, res) => {
@@ -708,7 +785,7 @@ app.get("/user_score/:month/:course", (req, res) => {
   INNER JOIN districts
   on member.district=districts.id
   WHERE permission = "ผู้สมัคร" AND MONTH(reg_day) = ? AND course = ?
-  ORDER BY reg_id ASC
+  ORDER BY reg_id DESC
   LIMIT ${offset}, ${pageSize};`;
 
   db.query(query, [month, course], (err, results) => {
@@ -750,7 +827,7 @@ app.get("/certifi_rp/:month/:course", (req, res) => {
   INNER JOIN districts
   on member.district=districts.id
   WHERE book_id != "" AND MONTH(reg_day) = ? AND course = ?
-  ORDER BY reg_id ASC
+  ORDER BY reg_id DESC
   LIMIT ${offset}, ${pageSize};`;
 
   db.query(query, [month, course], (err, results) => {
@@ -771,7 +848,7 @@ app.get("/certifi_rp/:month/:course", (req, res) => {
 app.get("/get_single_certi/:reg_id", (req, res) => {
   const reg_id = req.params.reg_id;
 
-  const query = `SELECT reg_id, id_card, course_name.name_th AS course_name_th, course_name.name_en AS course_name_en, candidate, prefix, name, lastname, member.name_en, member.lastname_en,
+  const query = `SELECT reg_id, id_card, course_name.name_th AS course_name_th, course_name.name_en AS course_name_en, candidate, prefix, prefixEN,name, lastname, member.name_en, member.lastname_en,
   nationality, tel, email, educational, branch, permission, receipt, gender, kn_score, book_id,
   profi_score, sum_score, pass_fail, profile_img, CONCAT( DATE_FORMAT( reg_day , '%d' ), '/', DATE_FORMAT( reg_day , '%m' ) , '/', DATE_FORMAT( reg_day , '%Y' ) +543 ) AS change_reg_day, provinces.name_th AS province_name, amphures.name_th AS amphure_name, districts.name_th AS district_name
   FROM member
@@ -808,69 +885,149 @@ app.put("/cancel_permission/:reg_id", (req, res) => {
   });
 });
 
-app.put("/sum_score", (req, res) => {
+app.put("/sum_score", async (req, res) => {
   const { reg_id, course, name, lastname } = req.body;
   const kn_score = req.body.kn_score;
   const profi_score = req.body.profi_score;
   const total_score = req.body.total_score;
   const pass_fail = req.body.pass_fail;
-  const sql = `UPDATE member SET kn_score = ?, profi_score = ?, sum_score = ?, pass_fail = ?, book_id = ?
+  const sql = `UPDATE member SET kn_score = ?, profi_score = ?, sum_score = ? , pass_fail = ?, book_id = ?
   WHERE reg_id = ?`;
+  // const sql = `UPDATE member SET kn_score = ?, profi_score = ?, sum_score = ?, pass_fail = ?, book_id = ?
+  // WHERE reg_id = ?`;
   const sql_book_id = "INSERT INTO book_id_value (id_values) VALUES (?)";
-  // const sql_permission = "SELECT sum_score FROM member WHERE reg_id = ?";
-  // const update_book = 'UPDATE member SET book_id =? WHERE reg_id = ?'
+  const sql_book_id_2 = `UPDATE member SET profi_score = ? WHERE reg_id = ?`;
+  const Array_score = req.body;
   const text = "";
-  if (total_score > 100 ) {
-    res.json({ status: "กรุณากรอกคะแนนให้ถูกต้อง" });
-    return false
-  } else if (total_score > 69 ) {
-    db.query(sql_book_id, text, (err, result_1) => {
-      function padWithLeadingZeros(num, totalLength) {
-        return String(num).padStart(totalLength, "0");
-      }
-      const insertedId = result_1.insertId;
-      const last_book_id = padWithLeadingZeros(insertedId, 4);
-      db.query(
-        sql,
-        [kn_score, profi_score, total_score, pass_fail, last_book_id, reg_id],
-        (err, result) => {
-          if (err) {
-            res.json({ status: "false" });
-            console.log(err);
-          } else {
-            res.json({ status: "true", result });
-            // res.send(result)
+  // console.log(Array_score)
+  try {
+    Array_score.forEach((response) => {
+      const reg_id = response.reg_id;
+      const kn_score = response.kn_score;
+      const profi_score = response.profi_score;
+      const result_score = kn_score + profi_score;
+
+      if (result_score >= 70) {
+        db.query(sql_book_id, [text], (err, result_1) => {
+          function padWithLeadingZeros(num, totalLength) {
+            return String(num).padStart(totalLength, "0");
           }
-        }
-      );
+          const insertedId = result_1.insertId;
+          const last_book_id = padWithLeadingZeros(insertedId, 4);
+
+          db.query(
+            sql,
+            [kn_score, profi_score, result_score, "ผ่าน", last_book_id, reg_id],
+            (err, result) => {
+              if (err) throw err;
+              console.log("Success");
+            }
+          );
+        });
+      } else if (total_score >= 50 && total_score <= 69) {
+        db.query(
+          sql,
+          [kn_score, profi_score, result_score, "ผ่าน", "", reg_id],
+          (err, result) => {
+            if (err) {
+              console.error(err);
+            }
+            console.log("Success");
+          }
+        );
+      } else {
+        db.query(
+          sql,
+          [kn_score, profi_score, result_score, "ไม่ผ่าน", "", reg_id],
+          (err, result) => {
+            if (err) {
+              console.error(err);
+            } 
+          }
+        );
+      }
     });
-  } else if(total_score >= 50 && total_score <= 69){
-    db.query(
-      sql,
-      [kn_score, profi_score, total_score, "ผ่าน", "", reg_id],
-      (err, result) => {
-        if (err) {
-          res.json({ status: "false" });
-          console.log(err);
-        } else {
-          res.json({ status: "true" });
-        }
-      }
-    );
-  } else {
-    db.query(
-      sql,
-      [kn_score, profi_score, total_score, "ไม่ผ่าน", "", reg_id],
-      (err, result) => {
-        if (err) {
-          res.json({ status: "false" });
-          console.log(err);
-        } else {
-          res.json({ status: "true" });
-        }
-      }
-    );
-  }
+
+    res.json({ status: true });
+  } catch (error) {}
+
+  // if (Array_score[0].kn_score) {
+  //   Array_score.forEach((res_1) => {
+  //     const reg_id = res_1.reg_id;
+  //     const kn_score = res_1.kn_score;
+  //     db.query(sql_book_id, [kn_score, reg_id], (err, result) => {
+  //       if (result) {
+  //         res.json({ status: "true" });
+  //       } else {
+  //         console.error(err);
+  //       }
+  //     });
+  //   });
+  // } else {
+  //   Array_score.forEach((res_1) => {
+  //     const reg_id = res_1.reg_id;
+  //     const profi_score = res_1.profi_score;
+  //     db.query(sql_book_id_2, [profi_score, reg_id], (err, result) => {
+  //       if (result) {
+  //         res.json({ status: "true" });
+  //       } else {
+  //         console.error(err);
+  //       }
+  //     });
+  //   });
+  // }
+
+  // if (total_score > 100) {
+  //   res.json({ status: "กรุณากรอกคะแนนให้ถูกต้อง" });
+  //   return false;
+  // } else if (total_score > 69) {
+  //   db.query(sql_book_id, text, (err, result_1) => {
+  //     function padWithLeadingZeros(num, totalLength) {
+  //       return String(num).padStart(totalLength, "0");
+  //     }
+  //     const insertedId = result_1.insertId;
+  //     const last_book_id = padWithLeadingZeros(insertedId, 4);
+  //     db.query(
+  //       sql,
+  //       [kn_score, profi_score, total_score, pass_fail, last_book_id, reg_id],
+  //       (err, result) => {
+  //         if (err) {
+  //           res.json({ status: "false" });
+  //           console.log(err);
+  //         } else {
+  //           res.json({ status: "true", result });
+  //           // res.send(result)
+  //         }
+  //       }
+  //     );
+  //   });
+  // } else if (total_score >= 50 && total_score <= 69) {
+  //   db.query(
+  //     sql,
+  //     [kn_score, profi_score, total_score, "ผ่าน", "", reg_id],
+  //     (err, result) => {
+  //       if (err) {
+  //         res.json({ status: "false" });
+  //         console.log(err);
+  //       } else {
+  //         res.json({ status: "true" });
+  //       }
+  //     }
+  //   );
+  // } else {
+  //   db.query(
+  //     sql,
+  //     [kn_score, profi_score, total_score, "ไม่ผ่าน", "", reg_id],
+  //     (err, result) => {
+  //       if (err) {
+  //         res.json({ status: "false" });
+  //         console.log(err);
+  //       } else {
+  //         res.json({ status: "true" });
+  //       }
+  //     }
+  //   );
+  // }
 });
 
 app.listen(PORT, () => console.log("Server is running on port " + PORT));

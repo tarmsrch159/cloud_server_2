@@ -636,10 +636,7 @@ app.get("/edit_user_info/:id", (req, res) => {
   db.query(query, [id], (err, result) => {
     if (err) {
       res.send(err);
-    }
-    if (result.length === 0) {
-      res.json({ ERROR: "You can not access to data" });
-    } else {
+    }else {
       res.send(result);
     }
   });
@@ -653,10 +650,7 @@ app.get("/course_name", (req, res) => {
   db.query(query, [id], (err, result) => {
     if (err) {
       res.send(err);
-    }
-    if (result.length === 0) {
-      res.json({ ERROR: "You can not access to data" });
-    } else {
+    }else {
       res.send(result);
     }
   });
@@ -668,11 +662,7 @@ app.delete("/delete_member/:id", (req, res) => {
   db.query("DELETE FROM member WHERE reg_id = ?", [id], (err, result) => {
     if (err) {
       res.send(err);
-    }
-
-    if (result.length === 0) {
-      res.json({ ERROR: "Failed" });
-    } else {
+    }else {
       res.send(result);
     }
   });

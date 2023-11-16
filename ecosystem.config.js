@@ -10,7 +10,7 @@ module.exports = {
   deploy : {
     production : {
       user : 'node',
-      host : ['13.228.225.19', ' 18.142.128.26', '54.254.162.138'],
+      host : ['https://server-2-s3v5.onrender.com'],
       ref  : 'origin/master',
       repo : 'git@github.com:tarmsrch159/cloud_server_2.git',
       path : '/var/www/cloud_server_2.git',

@@ -9,14 +9,16 @@ module.exports = {
 
   deploy : {
     production : {
-      user : 'SSH_USERNAME',
-      host : 'SSH_HOSTMACHINE',
+      user : 'node',
+      host : '13.228.225.19',
       ref  : 'origin/master',
-      repo : 'GIT_REPOSITORY',
-      path : 'DESTINATION_PATH',
+      repo : 'git@github.com:tarmsrch159/cloud_server_2.git',
+      path : '/var/www/myApp',
       'pre-deploy-local': '',
       'post-deploy' : 'npm install && pm2 reload ecosystem.config.js --env production',
       'pre-setup': ''
     }
   }
 };
+
+// && pm2 reload ecosystem.config.js --env production

@@ -605,7 +605,7 @@ app.get("/course_name", (req, res) => {
   const query = `SELECT *
   FROM course_name`;
 
-  db.query(query, [id], (err, result) => {
+  db.query(query, (err, result) => {
     if (err) {
       res.send(err);
     }else {

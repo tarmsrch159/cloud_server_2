@@ -62,49 +62,7 @@ setInterval(keepAlive, 60000);
 //       }, 1000); // Retry after 1 second (adjust the delay as needed)
 //     });
 //   }catch (err){
-//     console.log("Error: ", err)
 
-//   }
-
-// }
-
-// connectWithRetry(); // Start the initial connection
-
-// var db;
-
-// function handleDisconnect(){
-//   db = mysql.createConnection(db_config)
-
-//   function err(error){
-//     if(error){
-//       console.log('error when connecting to db', error)
-//       setTimeout(handleDisconnect, 2000);
-//     }
-//   };
-
-//   err()
-
-//   db.on('error', function(err){
-//     console.log('db error', error)
-//     if(err.code === 'PROTOCOL_CONNECTION_LOST') { // Connection to the MySQL server is usually
-//       handleDisconnect();                         // lost due to either server restart, or a
-//     } else {                                      // connnection idle timeout (the wait_timeout
-//       throw err;                                  // server variable configures this)
-//     }
-//   })
-
-// }
-
-// handleDisconnect()
-
-// Conection to database
-// db.connect((err) => {
-//   if (err) {
-//     console.log(err);
-//   } else {
-//     console.log("Connected to My database");
-//   }
-// });
 
 //allow access for another domain
 app.use((req, res, next) => {

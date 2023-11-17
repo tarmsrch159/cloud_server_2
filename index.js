@@ -606,11 +606,11 @@ app.get("/course_name", (req, res) => {
   FROM course_name`;
 
   db.query(query, (err, result) => {
-    if (err) {
-      res.send(err);
-    }else {
-      res.send(result);
-    }
+    db.release()
+    if (err) return done(err);
+
+    res.send(result);
+    
   });
 });
 

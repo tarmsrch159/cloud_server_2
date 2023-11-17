@@ -67,7 +67,8 @@ setInterval(keepAlive, 60000);
 app.use((req, res, next) => {
   res.setHeader(
     "Access-Control-Allow-Origin",
-    "https://frontend-user-test-deploy-tanachais-projects.vercel.app/"
+    // "https://frontend-user-test-deploy-tanachais-projects.vercel.app/"
+    "*"
   );
   res.setHeader(
     "Access-Control-Allow-Methods",

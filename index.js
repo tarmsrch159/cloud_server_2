@@ -3,7 +3,7 @@ const app = express();
 const cors = require("cors");
 const mysql = require("mysql");
 const bodyParser = require("body-parser");
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 4050;
 
 //Library's about hashing password
 const bcrypt = require("bcrypt");
@@ -607,7 +607,6 @@ app.get("/course_name", (req, res) => {
   FROM course_name`;
 
   db.query(query, (err, result) => {
-    db.release();
     if (err) return done(err);
 
     res.send(result);

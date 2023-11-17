@@ -63,22 +63,22 @@ setInterval(keepAlive, 60000);
 //     });
 //   }catch (err){
 
-
 //allow access for another domain
 app.use((req, res, next) => {
-  res.header(
+  res.setHeader(
     "Access-Control-Allow-Origin",
-    "https://rmutsb.vercel.app/",
+    "https://frontend-user-test-deploy-tanachais-projects.vercel.app/",
     "https://front-end-admin-vercel-1-4lho.vercel.app/"
   );
-  res.header(
+  res.setHeader(
     "Access-Control-Allow-Methods",
     "POST, GET, PUT, PATCH, DELETE, OPTIONS"
   );
-  res.header(
+  res.setHeader(
     "Access-Control-Allow-Headers",
     "Content-Type, Option, Authorization"
   );
+  res.setHeader("Access-Control-Allow-Credentials", true);
   return next();
 });
 
@@ -595,7 +595,7 @@ app.get("/edit_user_info/:id", (req, res) => {
   db.query(query, [id], (err, result) => {
     if (err) {
       res.send(err);
-    }else {
+    } else {
       res.send(result);
     }
   });
@@ -607,11 +607,10 @@ app.get("/course_name", (req, res) => {
   FROM course_name`;
 
   db.query(query, (err, result) => {
-    db.release()
+    db.release();
     if (err) return done(err);
 
     res.send(result);
-    
   });
 });
 
@@ -621,7 +620,7 @@ app.delete("/delete_member/:id", (req, res) => {
   db.query("DELETE FROM member WHERE reg_id = ?", [id], (err, result) => {
     if (err) {
       res.send(err);
-    }else {
+    } else {
       res.send(result);
     }
   });
@@ -891,7 +890,7 @@ app.put("/sum_score", async (req, res) => {
           (err, result) => {
             if (err) {
               console.error(err);
-            } 
+            }
           }
         );
       }

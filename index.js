@@ -84,11 +84,11 @@ app.use((req, res, next) => {
 
 app.use(express.json());
 app.use(cors());
-app.use(express.static(__dirname));
+app.use(express.static("public"));
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, "public/images"));
+    cb(null, path.join(__dirname,"public"));
   },
   filename: (req, file, cb) => {
     cb(

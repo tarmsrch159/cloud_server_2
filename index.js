@@ -88,7 +88,7 @@ app.use(express.static("public"));
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, path.join(__dirname,"/public/"));
+    cb(null, "public");
   },
   filename: (req, file, cb) => {
     cb(

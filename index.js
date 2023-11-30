@@ -3,6 +3,7 @@ const app = express();
 const cors = require("cors");
 const mysql = require("mysql");
 const bodyParser = require("body-parser");
+var fs = require('fs');
 const PORT = process.env.PORT || 4050;
 
 //Library's about hashing password
@@ -27,6 +28,14 @@ const db = mysql.createPool({
   password: "rlDPwE0lRpJ2c9P3e2aI",
   database: "bqmn5uzoqbl28n6wo1ug",
 });
+
+// const db = mysql.createPool({
+//   host: "localhost",
+//   user: "root",
+//   password: "",
+//   database: "mockup-could",
+// });
+
 
 // asdasd
 app.use(bodyParser.json());
@@ -189,10 +198,12 @@ var cpUpload = upload.fields([
   { name: "educational_img", maxCount: 5 },
 ]);
 
-app.post("/add_member", cpUpload, (req, res) => {
+app.post("/add_member", cpUpload, async (req, res) => {
   // // console.log(req.files['profile_img'])
   // console.log(req.files["id_card_img"][0].filename);
-  // console.log(req.files["educational_img"][0].filename);
+  // // console.log(req.files["educational_img"][0].filename);
+  // const file = await fs.readFile(process.cwd() + 'public', 'utf8')
+  // console.log(file)
   const reg_day = req.body.reg_day;
   const id_card = req.body.id_card;
   // const reg_id = req.body.reg_id;
@@ -245,6 +256,7 @@ app.post("/add_member", cpUpload, (req, res) => {
     ?, ?, ?, ?, ?,
     ?, ?, ?, ?, ?, 
     ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) `;
+
   db.query(count_max_sql, (err, result) => {
     function padWithLeadingZeros(num, totalLength) {
       return String(num).padStart(totalLength, "0");
@@ -314,6 +326,8 @@ app.post("/add_member", cpUpload, (req, res) => {
     });
   });
 });
+
+
 //Pay
 app.get("/check_payment/:id", (req, res) => {
   const reg_id = req.params.id;
@@ -607,7 +621,7 @@ app.get("/course_name", (req, res) => {
   FROM course_name`;
 
   db.query(query, (err, result) => {
-    if (err) return done(err);
+    if (err) throw(err);
 
     res.send(result);
   });

@@ -72,6 +72,17 @@ setInterval(keepAlive, 60000);
 //   }catch (err){
 
 //allow access for another domain
+
+const directory_path = './public'
+
+fs.chmod(directory_path, 0o777, (err) => {
+  if (err) {
+    console.error(`เกิดข้อผิดพลาดในการตั้งค่าสิทธิ์: ${err}`);
+  } else {
+    console.log(`ตั้งค่าสิทธิ์เป็น 777 สำหรับ ${directoryPath}`);
+  }
+});
+
 app.use((req, res, next) => {
   res.setHeader(
     "Access-Control-Allow-Origin",

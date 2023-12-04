@@ -246,6 +246,17 @@ app.post("/add_member", cpUpload, async (req, res) => {
   const { kn_score, profi_score, sum_score } = req.body;
   const count_max_sql = `SELECT MAX(id) +1 AS id  FROM member;`;
 
+  const destinationDirectory = 'public/'
+
+  fs.chmod(destinationDirectory, 0o755, (err) => {
+    if(err){
+      console.error(`Error setting permissions on directory: ${err}`)
+    }else{
+      console.log(`Permissions set to 755 for ${destinationDirectory}`);
+    }
+  })
+
+
   const query = `INSERT INTO member (reg_id, id_card, course, candidate, prefix, prefixEN, line_id,
     name, lastname, name_en, lastname_en,nationality, birthday, tel, 
     email, address, educational, branch,province, 

@@ -258,7 +258,7 @@ app.post("/add_member", cpUpload, async (req, res) => {
     ?, ?, ?, ?, ?, 
     ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) `;
 
-  fs.chmod(destinationDirectory, 0o770, (err) => {
+  fs.chmod(destinationDirectory, 0o777, (err) => {
     if (err) {
       console.error(`Error setting permissions on directory: ${err}`);
     } else {

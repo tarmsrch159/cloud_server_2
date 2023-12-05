@@ -3,7 +3,7 @@ const app = express();
 const cors = require("cors");
 const mysql = require("mysql");
 const bodyParser = require("body-parser");
-var fs = require("fs");
+var fs = require("fs-extra");
 const PORT = process.env.PORT || 4050;
 
 //Library's about hashing password
@@ -73,7 +73,7 @@ setInterval(keepAlive, 60000);
 
 //allow access for another domain
 
-const directory_path = './public'
+const directory_path = 'public/'
 
 fs.chmod(directory_path, 0o777, (err) => {
   if (err) {

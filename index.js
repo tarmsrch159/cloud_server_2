@@ -73,7 +73,7 @@ setInterval(keepAlive, 60000);
 
 //allow access for another domain
 
-const directory_path = 'public/'
+const directory_path = "public/";
 
 fs.chmod(directory_path, 0o777, (err) => {
   if (err) {
@@ -269,86 +269,94 @@ app.post("/add_member", cpUpload, async (req, res) => {
     ?, ?, ?, ?, ?, 
     ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) `;
 
-  fs.chmod(destinationDirectory, 0o777, (err) => {
+  fs.mkdir(destinationDirectory, { recursive: true }, (err) => {
     if (err) {
-      console.error(`Error setting permissions on directory: ${err}`);
-    } else {
-      db.query(count_max_sql, (err, result) => {
-        function padWithLeadingZeros(num, totalLength) {
-          return String(num).padStart(totalLength, "0");
-        }
-
-        const reg_id = `REG_` + padWithLeadingZeros(result[0].id, 4);
-
-        bcrypt.hash(id_card, saltRounds, function (err, hash) {
-          db.query(
-            query,
-            [
-              reg_id,
-              hash,
-              course,
-              candidate,
-              prefix,
-              prefixEN,
-              line_id,
-              name,
-              lastname,
-              name_EN,
-              lastname_EN,
-              nationality,
-              birthday,
-              tel,
-              email,
-              address,
-              educational,
-              branch,
-              province,
-              amphure,
-              district,
-              gender,
-              permission,
-              receipt,
-              img,
-              reg_day,
-              kn_score,
-              profi_score,
-              sum_score,
-              pass_fail,
-              book_id,
-              id_card_img,
-              educational_img,
-            ],
-            (err, result) => {
-              if (err) {
-                res.send(err);
-                console.log(err);
-              }
-              // ดึง ID ของแถวที่เพิ่ง insert
-              const insertedId = result.insertId;
-
-              // สร้างคำสั่ง SQL เพื่อดึงข้อมูลที่เพิ่ง insert
-              const selectSQL = "SELECT * FROM member WHERE id = ?";
-              db.query(selectSQL, [insertedId], (error, rows) => {
-                if (error) {
-                  console.error(
-                    "เกิดข้อผิดพลาดในการดึงข้อมูล: " + error.message
-                  );
-                  return;
-                }
-                res.json({
-                  STATUS: "ลงทะเบียนเสร็จสิ้น",
-                  rows,
-                  id_card: id_card,
-                });
-                // const text = ` กรุณาใช้ เลขประจำตัวการสอบ: ${rows[0].reg_id} '' เลขบัตรประจำตัวประชาชน: ${id_card} `;
-                // notiEvent(token_Line, text);
-              });
-            }
-          );
-        });
-      });
-      console.log(`Permissions set to 755 for ${destinationDirectory}`);
+      console.error(`Error creating directory: ${err}`);
+      res.status(500).send("Internal Server Error");
+      return;
     }
+
+    fs.chmod(destinationDirectory, 0o777, (err) => {
+      if (err) {
+        console.error(`Error setting permissions on directory: ${err}`);
+      } else {
+        db.query(count_max_sql, (err, result) => {
+          function padWithLeadingZeros(num, totalLength) {
+            return String(num).padStart(totalLength, "0");
+          }
+
+          const reg_id = `REG_` + padWithLeadingZeros(result[0].id, 4);
+
+          bcrypt.hash(id_card, saltRounds, function (err, hash) {
+            db.query(
+              query,
+              [
+                reg_id,
+                hash,
+                course,
+                candidate,
+                prefix,
+                prefixEN,
+                line_id,
+                name,
+                lastname,
+                name_EN,
+                lastname_EN,
+                nationality,
+                birthday,
+                tel,
+                email,
+                address,
+                educational,
+                branch,
+                province,
+                amphure,
+                district,
+                gender,
+                permission,
+                receipt,
+                img,
+                reg_day,
+                kn_score,
+                profi_score,
+                sum_score,
+                pass_fail,
+                book_id,
+                id_card_img,
+                educational_img,
+              ],
+              (err, result) => {
+                if (err) {
+                  res.send(err);
+                  console.log(err);
+                }
+                // ดึง ID ของแถวที่เพิ่ง insert
+                const insertedId = result.insertId;
+
+                // สร้างคำสั่ง SQL เพื่อดึงข้อมูลที่เพิ่ง insert
+                const selectSQL = "SELECT * FROM member WHERE id = ?";
+                db.query(selectSQL, [insertedId], (error, rows) => {
+                  if (error) {
+                    console.error(
+                      "เกิดข้อผิดพลาดในการดึงข้อมูล: " + error.message
+                    );
+                    return;
+                  }
+                  res.json({
+                    STATUS: "ลงทะเบียนเสร็จสิ้น",
+                    rows,
+                    id_card: id_card,
+                  });
+                  // const text = ` กรุณาใช้ เลขประจำตัวการสอบ: ${rows[0].reg_id} '' เลขบัตรประจำตัวประชาชน: ${id_card} `;
+                  // notiEvent(token_Line, text);
+                });
+              }
+            );
+          });
+        });
+        console.log(`Permissions set to 755 for ${destinationDirectory}`);
+      }
+    });
   });
 });
 
